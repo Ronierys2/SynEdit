@@ -24,4 +24,3 @@ There would however be no such project if Martin had not started to develop mwEd
 Misc.
 -----
 Delphinus support added
-
