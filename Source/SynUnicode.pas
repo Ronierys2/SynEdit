@@ -1728,24 +1728,41 @@ begin
       Inc(i);
       if c <= $7F then
       begin
-        Dest[count] := Char(c);
+		{$IFNDEF SYN_COMPILER_29_UP}
+		Dest[count] := AnsiChar(c);
+		{$ELSE}
+		Dest[count] := Char(c);
+		{$ENDIF}	          
         Inc(count);
       end
       else if c > $7FF then
       begin
         if count + 3 > MaxDestBytes then
           Break;
+		{$IFNDEF SYN_COMPILER_29_UP}
+        Dest[count] := AnsiChar($E0 or (c shr 12));
+        Dest[count+1] := AnsiChar($80 or ((c shr 6) and $3F));
+        Dest[count+2] := AnsiChar($80 or (c and $3F));
+		{$ELSE}
         Dest[count] := Char($E0 or (c shr 12));
         Dest[count+1] := Char($80 or ((c shr 6) and $3F));
         Dest[count+2] := Char($80 or (c and $3F));
+		{$ENDIF}		  
+
         Inc(count,3);
       end
       else //  $7F < Source[i] <= $7FF
       begin
         if count + 2 > MaxDestBytes then
           Break;
+		{$IFNDEF SYN_COMPILER_29_UP}
+        Dest[count] := AnsiChar($C0 or (c shr 6));
+        Dest[count+1] := AnsiChar($80 or (c and $3F));
+		{$ELSE}
         Dest[count] := Char($C0 or (c shr 6));
         Dest[count+1] := Char($80 or (c and $3F));
+		{$ENDIF}		  
+
         Inc(count,2);
       end;
     end;
